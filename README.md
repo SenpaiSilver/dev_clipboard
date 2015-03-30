@@ -21,9 +21,14 @@ To build the module just `make` it:
 Setup
 =====
 
-As `root` copy `clipboard.rules` to the `/etc/udev/rules.d/` folder:
+As `root` copy `clipboard.rules` to the `/etc/udev/rules.d/` folder and enable the module:
 
 	# cp ./clipboard.rules /etc/udev/rules.d/10-clipboard.rules
+	# insmod clipboard.ko
+
+To disable the module:
+
+	# rmmod clipboard
 
 Usage
 =====
