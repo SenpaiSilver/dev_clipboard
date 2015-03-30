@@ -10,6 +10,8 @@ static const struct file_operations clipboard_fops = {
 	.owner = THIS_MODULE,
 	.read = &clipboard_read,
 	.write = &clipboard_write
+//.open = &clipboard_open,
+//.close = &clipboard_close
 };
 
 static struct miscdevice clipboard_dev = {
@@ -18,7 +20,7 @@ static struct miscdevice clipboard_dev = {
 	&clipboard_fops
 };
 
-static int __init clipboard_init()
+static int __init clipboard_init(void)
 {
 	int ret;
 	printk("Starting clipboard...\n");
@@ -29,7 +31,7 @@ static int __init clipboard_init()
 	return (ret);
 }
 
-static void __exit clipboard_exit()
+static void __exit clipboard_exit(void)
 {
 	printk("Ending clipboard...\n");
 	misc_deregister(&clipboard_dev);

@@ -2,29 +2,55 @@
 #include <linux/module.h>
 
 #include <linux/fs.h>
+#include <linux/slab.h>
 #include <linux/miscdevice.h>
 
 #include <asm/uaccess.h>
 
-ssize_t clipboard_write(struct file* file, char* buf, size_t count, loff_t* ppos)
-{
-	int len = 0;
-	(void) len;
+static char* membuffer = NULL;
+static ssize_t membuffsize = 0;
 
-	return (len);
+ssize_t clipboard_write(struct file* file, const char* buf, size_t count, loff_t* ppos)
+{
+#ifdef DEBUG
+	unsigned int i;
+	
+	printk("%d\t%d\n", *ppos, count);
+	printk("Data: \n");
+	for (i = 0; i < count - 1; ++i)
+		printk("%c", buf[i]);
+	printk("### END ###\n");
+#endif
+	if (*ppos != 0)
+		return (0);
+	if (*ppos == 0)
+		membuffsize = count;
+	else
+		membuffsize += count;
+	if (membuffer != NULL)
+		kfree(membuffer);
+	if ((membuffer = kmalloc(membuffsize * sizeof(membuffer), GFP_KERNEL)) == NULL)
+		return (-EINVAL);
+	membuffer = memcpy(membuffer + (membuffsize - count), buf, count - 1);
+	membuffer[membuffsize - 1] = '\0';
+	*ppos += count;
+#ifdef DEBUG
+	printk("Current clipboard data: \n%s\n### END ###\n", membuffer);
+#endif
+	return (count);
 }
 
 ssize_t clipboard_read(struct file* file, char* buf, size_t count, loff_t* ppos)
 {
-	char *testest = "Meh.\n";
-	int len = strlen(testest);
+	unsigned int len = membuffer == NULL ? 0 : strlen(membuffer);
 
-	if (count < len)
-		return (-EINVAL);
+#ifdef DEBUG
+	printk("No buffer in clipboard.");
+#endif
 	if (*ppos != 0)
 		return (0);
-	if (copy_to_user(buf, testest, len))
+	if (copy_to_user(buf, membuffer, len))
 		return (-EINVAL);
 	*ppos = len;
-	return (len);
+	return ((ssize_t)*ppos);
 }
