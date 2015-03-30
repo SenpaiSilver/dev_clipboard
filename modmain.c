@@ -2,6 +2,7 @@
 #include <linux/module.h>
 
 #include <linux/fs.h>
+#include <linux/slab.h>
 #include <linux/miscdevice.h>
 
 #include "clipboard.h"
@@ -35,6 +36,7 @@ static void __exit clipboard_exit(void)
 {
 	printk("Ending clipboard...\n");
 	misc_deregister(&clipboard_dev);
+	free_clipboard_buffer();
 }
 
 module_init(clipboard_init);

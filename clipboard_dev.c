@@ -7,7 +7,7 @@
 
 #include <asm/uaccess.h>
 
-static char* membuffer = NULL;
+char* membuffer = NULL;
 static ssize_t membuffsize = 0;
 
 ssize_t clipboard_write(struct file* file, const char* buf, size_t count, loff_t* ppos)
@@ -53,4 +53,10 @@ ssize_t clipboard_read(struct file* file, char* buf, size_t count, loff_t* ppos)
 		return (-EINVAL);
 	*ppos = len;
 	return ((ssize_t)*ppos);
+}
+
+void free_clipboard_buffer(void)
+{
+	if (membuffer != NULL)
+		kfree(membuffer);
 }
