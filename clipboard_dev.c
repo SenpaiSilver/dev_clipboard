@@ -29,10 +29,10 @@ ssize_t clipboard_write(struct file* file, const char* buf, size_t count, loff_t
 		membuffsize += count;
 	if (membuffer != NULL)
 		kfree(membuffer);
-	if ((membuffer = kmalloc(membuffsize * sizeof(membuffer), GFP_KERNEL)) == NULL)
+	if ((membuffer = kmalloc((membuffsize + 1) * sizeof(membuffer), GFP_USER)) == NULL)
 		return (-EINVAL);
-	membuffer = memcpy(membuffer + (membuffsize - count), buf, count - 1);
-	membuffer[membuffsize - 1] = '\0';
+	membuffer = memcpy(membuffer + (membuffsize - count), buf, count);
+	membuffer[membuffsize] = '\0';
 	*ppos += count;
 #ifdef DEBUG
 	printk("Current clipboard data: \n%s\n### END ###\n", membuffer);
