@@ -36,3 +36,5 @@
 *.mod.o
 modules.order
 Module.symvers
+*.swp
+*.cmd
