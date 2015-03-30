@@ -10,6 +10,10 @@ When the module is unloaded the data is lost.
 Building
 ========
 
+For Debian:
+
+	# apt-get install module assistant
+
 To build the module just `make` it:
 
 	$ make
