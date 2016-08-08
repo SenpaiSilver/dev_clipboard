@@ -1,11 +1,15 @@
 /dev/clipboard
 ==============
 
+Do not use in production. So much will go wrong.
+
 `/dev/clipboard` is a device that works like a clipboard.
 
 You can copy and paste data between tty by redirecting output and inputs. Right now it does use a shared clipboard between users and MUST not be used as a way to store secure data.
 
 When the module is unloaded the data is lost.
+
+The current allocation isn't done correctly and needs to be rewritten.
 
 Building
 ========
